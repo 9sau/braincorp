@@ -122,28 +122,14 @@ public class BraincorpApplicationTests {
 
 	@Test
 	public void shouldReturnListOfUsersWithNamesUidsGids() throws Exception {
-		// String expected =
-		// "[{\"name\":\"root\",\"uid\":0,\"gid\":0,\"comment\":\"System
-		// Administrator\",\"home\":\"/var/root\",\"shell\":\"/bin/sh\"},{\"name\":\"nobody\",\"uid\":-2,\"gid\":-2,\"comment\":\"Unprivileged
-		// User\",\"home\":\"/var/empty\",\"shell\":\"/usr/bin/false\"},{\"name\":\"daemon\",\"uid\":1,\"gid\":1,\"comment\":\"System
-		// Services\",\"home\":\"/var/root\",\"shell\":\"/usr/bin/false\"},{\"name\":\"_captiveagent\",\"uid\":258,\"gid\":258,\"comment\":\"captiveagent\",\"home\":\"/var/empty\",\"shell\":\"/usr/bin/false\"}]";
 		String expected = "[{\"name\":\"root\",\"uid\":0,\"gid\":0,\"comment\":\"System Administrator\",\"home\":\"/var/root\",\"shell\":\"/bin/sh\"}, {\"name\":\"nobody\",\"uid\":-2,\"gid\":-2,\"comment\":\"Unprivileged User\",\"home\":\"/var/empty\",\"shell\":\"/usr/bin/false\"},{\"name\":\"daemon\",\"uid\":1,\"gid\":1,\"comment\":\"System Services\",\"home\":\"/var/root\",\"shell\":\"/usr/bin/false\"}]";
 		List<User> users = new ArrayList<User>();
 		users.add(new User("root", 0, 0, "System Administrator", "/var/root", "/bin/sh"));
 		users.add(new User("nobody", -2, -2, "Unprivileged User", "/var/empty", "/usr/bin/false"));
 		users.add(new User("daemon", 1, 1, "System Services", "/var/root", "/usr/bin/false"));
-		// users.add(new User("_captiveagent", 258, 258, "captiveagent", "/var/empty",
-		// "/usr/bin/false"));
-
 		List<String> names = Arrays.asList("root");
 		List<Long> uids = Arrays.asList(-2L);
 		List<Long> gids = Arrays.asList(1L);
-//		List<String> comments = Arrays.asList("captiveagent");
-//		List<String> home = Arrays.asList("/var/root");
-//		List<String> shell = Arrays.asList("/bin/sh");
-
-		// Mockito.when(userService.getUsersByQuery(names, uids, gids, comments, home,
-		// shell)).thenReturn(users);
 		Mockito.when(userService.getUsersByQuery(names, uids, gids, null, null, null)).thenReturn(users);
 		RequestBuilder builder = MockMvcRequestBuilders.get("/users/query?name=root&uid=-2&gid=1");
 		MvcResult result = mockMvc.perform(builder).andReturn();
@@ -152,28 +138,14 @@ public class BraincorpApplicationTests {
 
 	@Test
 	public void shouldReturnListOfUsersWithNameRootOrUid_2OrGid1() throws Exception {
-		// String expected =
-		// "[{\"name\":\"root\",\"uid\":0,\"gid\":0,\"comment\":\"System
-		// Administrator\",\"home\":\"/var/root\",\"shell\":\"/bin/sh\"},{\"name\":\"nobody\",\"uid\":-2,\"gid\":-2,\"comment\":\"Unprivileged
-		// User\",\"home\":\"/var/empty\",\"shell\":\"/usr/bin/false\"},{\"name\":\"daemon\",\"uid\":1,\"gid\":1,\"comment\":\"System
-		// Services\",\"home\":\"/var/root\",\"shell\":\"/usr/bin/false\"},{\"name\":\"_captiveagent\",\"uid\":258,\"gid\":258,\"comment\":\"captiveagent\",\"home\":\"/var/empty\",\"shell\":\"/usr/bin/false\"}]";
 		String expected = "[{\"name\":\"root\",\"uid\":0,\"gid\":0,\"comment\":\"System Administrator\",\"home\":\"/var/root\",\"shell\":\"/bin/sh\"}, {\"name\":\"nobody\",\"uid\":-2,\"gid\":-2,\"comment\":\"Unprivileged User\",\"home\":\"/var/empty\",\"shell\":\"/usr/bin/false\"},{\"name\":\"daemon\",\"uid\":1,\"gid\":1,\"comment\":\"System Services\",\"home\":\"/var/root\",\"shell\":\"/usr/bin/false\"}]";
 		List<User> users = new ArrayList<User>();
 		users.add(new User("root", 0, 0, "System Administrator", "/var/root", "/bin/sh"));
 		users.add(new User("nobody", -2, -2, "Unprivileged User", "/var/empty", "/usr/bin/false"));
 		users.add(new User("daemon", 1, 1, "System Services", "/var/root", "/usr/bin/false"));
-		// users.add(new User("_captiveagent", 258, 258, "captiveagent", "/var/empty",
-		// "/usr/bin/false"));
-
 		List<String> names = Arrays.asList("root");
 		List<Long> uids = Arrays.asList(-2L);
 		List<Long> gids = Arrays.asList(1L);
-//		List<String> comments = Arrays.asList("captiveagent");
-//		List<String> home = Arrays.asList("/var/root");
-//		List<String> shell = Arrays.asList("/bin/sh");
-
-		// Mockito.when(userService.getUsersByQuery(names, uids, gids, comments, home,
-		// shell)).thenReturn(users);
 		Mockito.when(userService.getUsersByQuery(names, uids, gids, null, null, null)).thenReturn(users);
 		RequestBuilder builder = MockMvcRequestBuilders.get("/users/query?name=root&uid=-2&gid=1");
 		MvcResult result = mockMvc.perform(builder).andReturn();
@@ -316,7 +288,7 @@ public class BraincorpApplicationTests {
 		MvcResult result = mockMvc.perform(builder).andReturn();
 		JSONAssert.assertEquals(expected, result.getResponse().getContentAsString(), false);
 	}
-	
+
 	@Test
 	public void shouldReturnListOfGroupsForUid265() throws Exception {
 		String expected = "[{\"name\":\"_fpsd\",\"gid\":265,\"members\":[\"_fpsd\"]}]";
@@ -327,7 +299,7 @@ public class BraincorpApplicationTests {
 		MvcResult result = mockMvc.perform(builder).andReturn();
 		JSONAssert.assertEquals(expected, result.getResponse().getContentAsString(), false);
 	}
-	
+
 	@Test
 	public void shouldReturnEmptyListOfGroupsForUid1() throws Exception {
 		String expected = "[]";
@@ -337,7 +309,7 @@ public class BraincorpApplicationTests {
 		MvcResult result = mockMvc.perform(builder).andReturn();
 		JSONAssert.assertEquals(expected, result.getResponse().getContentAsString(), false);
 	}
-	
+
 	@Test
 	public void shouldReturnNullForUid2() throws Exception {
 		String expected = "[]";
