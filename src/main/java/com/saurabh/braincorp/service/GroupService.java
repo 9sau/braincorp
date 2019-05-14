@@ -14,6 +14,7 @@ import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -123,11 +124,11 @@ public class GroupService implements Runnable {
 		return groups.entrySet().stream().filter(entry -> {
 			Group group = entry.getValue();
 			if ((name != null && name.indexOf(group.getName()) != -1)
-					|| (gid != null && gid.indexOf(group.getGid()) != -1))
+					|| (gid != null && gid.indexOf(group.getGid()) != -1)
+					|| (member != null && !Collections.disjoint(member, group.getMembers())))
 				return true;
 			return false;
 		}).map(map -> map.getValue()).collect(Collectors.toList());
-
 	}
 
 	public Group getGroupById(long id) {
