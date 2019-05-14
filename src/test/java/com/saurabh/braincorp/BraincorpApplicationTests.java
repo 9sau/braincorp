@@ -243,10 +243,10 @@ public class BraincorpApplicationTests {
 	}
 
 	@Test
-	public void shouldReturnGroupWithIdZero() throws Exception {
+	public void shouldReturnGroupWithId0() throws Exception {
 		String expected = "{\"name\":\"wheel\",\"gid\":0,\"members\":[\"root\"]}";
 		Group group = new Group("wheel", 0L, Arrays.asList("root"));
-		Mockito.when(groupService.getGroupById(0)).thenReturn(group);
+		Mockito.when(groupService.getGroupById(0L)).thenReturn(group);
 		RequestBuilder builder = MockMvcRequestBuilders.get("/groups/{id}", 0L);
 		MvcResult result = mockMvc.perform(builder).andReturn();
 		JSONAssert.assertEquals(expected, result.getResponse().getContentAsString(), false);

@@ -26,6 +26,7 @@ import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.saurabh.braincorp.exception.GroupFileFormatException;
 import com.saurabh.braincorp.model.Group;
 
 @Service
@@ -48,14 +49,18 @@ public class GroupService implements Runnable {
 	private void loadGroupData(final String filename) {
 		try (Stream<String> stream = Files.lines(Paths.get(filename))) {
 			stream.forEach(line -> {
-				process(line);
+				try {
+					process(line);
+				} catch (GroupFileFormatException e) {
+					e.printStackTrace();
+				}
 			});
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
-	private void process(String line) {
+	private void process(String line) throws GroupFileFormatException{
 		if (line != null && line.charAt(0) != '#') {
 			Group group = new Group();
 			String words[] = line.split(":");
@@ -93,6 +98,7 @@ public class GroupService implements Runnable {
 				for (WatchEvent<?> event : key.pollEvents()) {
 					WatchEvent.Kind<?> kind = event.kind();
 
+					@SuppressWarnings("unchecked")
 					WatchEvent<Path> ev = (WatchEvent<Path>) event;
 					Path fileName = ev.context();
 

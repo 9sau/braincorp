@@ -26,7 +26,7 @@ public class UserGroupService {
 		return getGroupsByUsername(groups, user.getName());
 	}
 
-	public List<Group> getGroupsByUsername(List<Group> groups, String username) {
+	private List<Group> getGroupsByUsername(List<Group> groups, String username) {
 		List<Group> groupList = new ArrayList<>();
 		for (Group group : groups) {
 			if (group != null && group.getMembers() != null && group.getMembers().indexOf(username) != -1) {

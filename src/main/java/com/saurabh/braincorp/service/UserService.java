@@ -24,6 +24,7 @@ import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.saurabh.braincorp.exception.PasswdFileFormatException;
 import com.saurabh.braincorp.exception.ResourceNotFoundException;
 import com.saurabh.braincorp.model.User;
 
@@ -47,14 +48,18 @@ public class UserService implements Runnable {
 	private void loadUserData(String filename) {
 		try (Stream<String> stream = Files.lines(Paths.get(filename))) {
 			stream.forEach(line -> {
-				process(line);
+				try {
+					process(line);
+				} catch (PasswdFileFormatException e) {
+					e.printStackTrace();
+				}
 			});
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
-	private void process(String line) {
+	private void process(String line) throws PasswdFileFormatException {
 		if (line != null && line.charAt(0) != '#') {
 			User user = new User();
 			String words[] = line.split(":");
@@ -96,6 +101,7 @@ public class UserService implements Runnable {
 				for (WatchEvent<?> event : key.pollEvents()) {
 					WatchEvent.Kind<?> kind = event.kind();
 
+					@SuppressWarnings("unchecked")
 					WatchEvent<Path> ev = (WatchEvent<Path>) event;
 					Path fileName = ev.context();
 
