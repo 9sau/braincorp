@@ -39,6 +39,7 @@ RUNNING THE TESTS
 	3. Type mvn test
 
 APIs
+	
 	You can directly hit the below urls using a browser or a rest client like postman.
 	
 	1. GET localhost:8080/users
