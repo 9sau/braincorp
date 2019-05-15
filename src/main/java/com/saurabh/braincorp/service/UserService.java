@@ -37,12 +37,12 @@ public class UserService implements Runnable {
 	@Value("${app.passwd.filename:passwd}")
 	private String filename;
 
-	@Value("${app.passwd.directory:/private/etc/}")
+	@Value("${app.passwd.directory:/private/etc}")
 	private String directory;
 
 	@PostConstruct
 	public void initialize() throws IOException {
-		loadUserData(directory + filename);
+		loadUserData(directory + "/" + filename);
 		new Thread(this).start();
 	}
 
@@ -108,7 +108,7 @@ public class UserService implements Runnable {
 					if (kind == ENTRY_MODIFY) {
 						System.out.println(fileName + " MyFile: " + filename + " Directory: " + directory);
 						if (fileName.toString().equals(filename)) {
-							loadUserData(directory + filename);
+							loadUserData(directory + "/" + filename);
 						}
 					}
 				}

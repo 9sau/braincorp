@@ -43,7 +43,7 @@ public class GroupService implements Runnable {
 
 	@PostConstruct
 	public void initialize() throws IOException {
-		loadGroupData(directory + filename);
+		loadGroupData(directory + "/" + filename);
 		new Thread(this).start();
 	}
 
@@ -109,7 +109,7 @@ public class GroupService implements Runnable {
 						System.out.println(fileName + " MyFile: " + filename + " Directory: " + directory);
 
 						if (fileName.toString().equals(filename)) {
-							loadGroupData(directory + filename);
+							loadGroupData(directory + "/" + filename);
 						}
 					}
 				}
