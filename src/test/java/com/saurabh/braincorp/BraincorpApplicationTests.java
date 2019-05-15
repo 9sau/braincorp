@@ -6,9 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.skyscreamer.jsonassert.JSONAssert;
@@ -36,9 +34,6 @@ public class BraincorpApplicationTests {
 
 	@Autowired
 	private MockMvc mockMvc;
-
-	@Rule
-	public ExpectedException thrown = ExpectedException.none();
 
 	@MockBean
 	private UserService userService;
@@ -84,9 +79,8 @@ public class BraincorpApplicationTests {
 
 	@Test
 	public void shouldReturnResourceNotFoundExceptionForUserId10() throws Exception {
-		Mockito.when(userService.getUserById(10L)).thenThrow(new ResourceNotFoundException());
+		Mockito.when(userService.getUserById(10L)).thenReturn(null);
 		RequestBuilder builder = MockMvcRequestBuilders.get("/users/{id}", 10L);
-
 		MvcResult result = mockMvc.perform(builder).andReturn();
 		Exception exception = result.getResolvedException();
 		assertTrue(exception instanceof ResourceNotFoundException);
@@ -254,7 +248,7 @@ public class BraincorpApplicationTests {
 
 	@Test()
 	public void shouldReturnResourceNotFoundExceptionForGroupId10() throws Exception {
-		Mockito.when(userService.getUserById(10L)).thenThrow(new ResourceNotFoundException());
+		Mockito.when(userService.getUserById(10L)).thenReturn(null);
 		RequestBuilder builder = MockMvcRequestBuilders.get("/groups/{id}", 10L);
 		MvcResult result = mockMvc.perform(builder).andReturn();
 		Exception exception = result.getResolvedException();

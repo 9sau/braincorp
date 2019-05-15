@@ -19,10 +19,11 @@ public class UserGroupService {
 	private GroupService groupService;
 
 	public List<Group> getUserGroupsByUserId(long id) {
+		List<Group> groups = new ArrayList<Group>();
 		User user = userService.getUserById(id);
 		if(user == null)
-			return null;
-		List<Group> groups = groupService.getGroups();
+			return groups;
+		groups = groupService.getGroups();
 		return getGroupsByUsername(groups, user.getName());
 	}
 

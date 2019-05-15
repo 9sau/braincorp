@@ -4,6 +4,7 @@ import static java.nio.file.StandardWatchEventKinds.ENTRY_CREATE;
 import static java.nio.file.StandardWatchEventKinds.ENTRY_DELETE;
 import static java.nio.file.StandardWatchEventKinds.ENTRY_MODIFY;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
@@ -32,7 +33,7 @@ import com.saurabh.braincorp.model.Group;
 @Service
 public class GroupService implements Runnable {
 
-	private final static Map<Long, Group> groups = new HashMap<Long, Group>();
+	private static Map<Long, Group> groups = new HashMap<Long, Group>();
 
 	@Value("${app.group.filename:group}")
 	private String filename;
@@ -41,26 +42,28 @@ public class GroupService implements Runnable {
 	private String directory;
 
 	@PostConstruct
-	public void initialize() {
+	public void initialize() throws IOException {
 		loadGroupData(directory + filename);
 		new Thread(this).start();
 	}
 
-	private void loadGroupData(final String filename) {
+	private void loadGroupData(final String filename) throws IOException {
 		try (Stream<String> stream = Files.lines(Paths.get(filename))) {
 			stream.forEach(line -> {
 				try {
 					process(line);
 				} catch (GroupFileFormatException e) {
-					e.printStackTrace();
+					throw new GroupFileFormatException("Invalid file format.");
 				}
 			});
+		} catch (FileNotFoundException ex) {
+			throw new FileNotFoundException("File " + filename + " not found. Please check the path");
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw new IOException("Something went wrong with the file you requested.");
 		}
 	}
 
-	private void process(String line) throws GroupFileFormatException{
+	private void process(String line) throws GroupFileFormatException {
 		if (line != null && line.charAt(0) != '#') {
 			Group group = new Group();
 			String words[] = line.split(":");

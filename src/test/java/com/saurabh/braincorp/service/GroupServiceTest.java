@@ -62,7 +62,7 @@ public class GroupServiceTest {
 		Mockito.when(groupService.getGroupById(10L)).thenThrow(new ResourceNotFoundException());
 		groupService.getGroupById(10L);
 	}
-	
+
 	@Test
 	public void shouldReturnListOfGroupsWithNameMailOrGid265() throws Exception {
 		List<Group> expected = new ArrayList<Group>();
@@ -75,7 +75,7 @@ public class GroupServiceTest {
 		assertTrue(expected.equals(actual));
 		assertTrue(expected.size() == actual.size());
 	}
-	
+
 	@Test
 	public void shouldReturnListOfGroupsWithMembers_analyticsdAnd_networkd() throws Exception {
 		List<Group> expected = new ArrayList<Group>();

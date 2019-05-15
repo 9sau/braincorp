@@ -4,6 +4,7 @@ import static java.nio.file.StandardWatchEventKinds.ENTRY_CREATE;
 import static java.nio.file.StandardWatchEventKinds.ENTRY_DELETE;
 import static java.nio.file.StandardWatchEventKinds.ENTRY_MODIFY;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
@@ -40,22 +41,24 @@ public class UserService implements Runnable {
 	private String directory;
 
 	@PostConstruct
-	public void initialize() {
+	public void initialize() throws IOException {
 		loadUserData(directory + filename);
 		new Thread(this).start();
 	}
 
-	private void loadUserData(String filename) {
+	private void loadUserData(String filename) throws IOException {
 		try (Stream<String> stream = Files.lines(Paths.get(filename))) {
 			stream.forEach(line -> {
 				try {
 					process(line);
 				} catch (PasswdFileFormatException e) {
-					e.printStackTrace();
+					throw new PasswdFileFormatException("Invalid file format.");
 				}
 			});
+		} catch (FileNotFoundException ex) {
+			throw new FileNotFoundException("File " + filename + " not found. Please check the path");
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw new IOException("Something went wrong with the file you requested.");
 		}
 	}
 
@@ -87,9 +90,6 @@ public class UserService implements Runnable {
 			WatchService watcher = FileSystems.getDefault().newWatchService();
 			Path dir = Paths.get(directory);
 			dir.register(watcher, ENTRY_CREATE, ENTRY_DELETE, ENTRY_MODIFY);
-
-			System.out.println("Watch Service registered for dir: " + dir.getFileName());
-
 			while (true) {
 				WatchKey key;
 				try {
@@ -128,7 +128,7 @@ public class UserService implements Runnable {
 		return new ArrayList<User>(users.values());
 	}
 
-	public User getUserById(long id)throws ResourceNotFoundException {
+	public User getUserById(long id) throws ResourceNotFoundException {
 		return users.get(id);
 	}
 
